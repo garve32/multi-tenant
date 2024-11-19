@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.multitenant.repository.TenantMapper">
+
+<!--  <insert id="ins" parameterType="String">-->
+<!--    insert into EMP (id, name, email) values (#{name})-->
+<!--  </insert>-->
+
+  <select id="getUsers" resultType="hashmap">
+    select id, name, email from emp
+  </select>
+
+<!--  <delete id="del">-->
+<!--    delete from testt-->
+<!--  </delete>-->
+</mapper>

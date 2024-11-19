@@ -2,22 +2,34 @@ spring:
   application:
     name: multi-tenant
   datasource:
-    tenant1:
-#      url: jdbc:h2:mem:tenant1_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-      url: jdbc:h2:mem:tenant1_db;INIT=RUNSCRIPT FROM 'classpath:h2init/schema.sql'\;RUNSCRIPT FROM 'classpath:h2init/data.sql'
-      username: sa
-      password:
-      driver-class-name: org.h2.Driver
-    tenant2:
-#      url: jdbc:h2:mem:tenant2_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-      url: jdbc:h2:mem:tenant2_db;INIT=RUNSCRIPT FROM 'classpath:h2init/schema.sql'\;RUNSCRIPT FROM 'classpath:h2init/data2.sql'
-      username: sa
-      password:
-      driver-class-name: org.h2.Driver
+    hikari:
+      tenant1:
+        jdbc-url: jdbc:h2:mem:tenant1_db;INIT=RUNSCRIPT FROM 'classpath:h2init/schema.sql'\;RUNSCRIPT FROM 'classpath:h2init/data1.sql'
+        username: sa
+        password:
+        driver-class-name: org.h2.Driver
+        pool-name: company1-cp
+        maximum-pool-size: 5
+      tenant2:
+        jdbc-url: jdbc:h2:mem:tenant2_db;INIT=RUNSCRIPT FROM 'classpath:h2init/schema.sql'\;RUNSCRIPT FROM 'classpath:h2init/data2.sql'
+        username: sa
+        password:
+        driver-class-name: org.h2.Driver
+        pool-name: company2-cp
+        maximum-pool-size: 3
+      tenant3:
+        jdbc-url: jdbc:h2:mem:tenant3_db;INIT=RUNSCRIPT FROM 'classpath:h2init/schema.sql'\;RUNSCRIPT FROM 'classpath:h2init/data3.sql'
+        username: sa
+        password:
+        driver-class-name: org.h2.Driver
+        pool-name: company3-cp
+        maximum-pool-size: 4
   h2:
     console:
       enabled: true
       path: /h2-console
-  mybatis:
-    config-location: classpath:mybatis-config.xml
-    mapper-locations: classpath:mapper/*.xml
+#logging:
+#  level:
+#    com.zaxxer.hikari: TRACE
+#    com.zaxxer.hikari.HikariConfig: DEBUG
+
