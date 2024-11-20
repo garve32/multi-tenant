@@ -1,21 +1,37 @@
-package com.example.multitenant.config;
+package com.example.multitenant.security;
 
+import com.example.multitenant.context.TenantContext;
+import com.example.multitenant.model.BspUser;
 import com.example.multitenant.model.BspUserDetails;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.example.multitenant.repository.UserDetailsMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-public class UserDetailServiceImpl implements UserDetailsService {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class UserDetailsServiceImpl implements UserDetailsService {
+
+    private final UserDetailsMapper userDetailsMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // todo : 사용자 정보를 찾아서 가져와야함.
-        BspUser bspUser = new BspUser();
+        String currentTenant = TenantContext.getCurrentTenant();
+        log.info("UserDetailsServiceImpl userId = {}", username);
+        log.info("UserDetailsServiceImpl currentTenant = {}", currentTenant);
+        BspUser bspUser = userDetailsMapper.selectUser(username);
+        log.info("bspuser = {}", bspUser);
         return new BspUserDetails(bspUser, getAuthorities(username));
     }
 

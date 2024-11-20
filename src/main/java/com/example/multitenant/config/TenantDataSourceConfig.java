@@ -2,11 +2,9 @@ package com.example.multitenant.config;
 
 import com.example.multitenant.context.TenantEnum;
 import com.zaxxer.hikari.HikariDataSource;
-import java.util.HashMap;
-import java.util.Map;
-import javax.sql.DataSource;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.type.JdbcType;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,6 +14,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 @MapperScan(value = {"com.example.multitenant.repository"}, annotationClass = Mapper.class, sqlSessionFactoryRef = "sessionFactory")
 public class TenantDataSourceConfig {
@@ -23,6 +25,7 @@ public class TenantDataSourceConfig {
     @Primary
     @Bean
     public DataSource dataSourceRouter() {
+        System.out.println("TenantDataSourceConfig.dataSourceRouter");
 
         TenantRoutingDataSource routingDataSource = new TenantRoutingDataSource();
         Map<Object, Object> targetDataSources = new HashMap<>();
@@ -59,6 +62,14 @@ public class TenantDataSourceConfig {
         factoryBean.setDataSource(dataSource);
         factoryBean.setMapperLocations(
                 new PathMatchingResourcePatternResolver().getResources("classpath:mapper/*.xml"));
+
+        SqlSessionFactory sessionFactory = factoryBean.getObject();
+        assert sessionFactory != null;
+        sessionFactory.getConfiguration().setMapUnderscoreToCamelCase(false);
+        sessionFactory.getConfiguration().setLazyLoadingEnabled(true);
+        sessionFactory.getConfiguration().setJdbcTypeForNull(JdbcType.NULL);
+        sessionFactory.getConfiguration().setCallSettersOnNulls(true);
+
         return factoryBean.getObject();
     }
 

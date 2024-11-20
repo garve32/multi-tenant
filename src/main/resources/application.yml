@@ -32,4 +32,7 @@ spring:
 #  level:
 #    com.zaxxer.hikari: TRACE
 #    com.zaxxer.hikari.HikariConfig: DEBUG
-
+jwt:
+  secret: 5kZHdTLiJrNc6UnoRALCax20FRk9kqtDzDkL2NDgeC0=
+  access-token-expiry: 86400
+  refresh-token-expiry: 525600

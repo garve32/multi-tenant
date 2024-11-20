@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS EMP
 (
-    id  integer not null,
+    userId  integer not null,
     name    varchar(255) not null,
-    email   varchar(255),
-    primary key(id)
+    password   varchar(255),
+    tenantId   varchar(255),
+    primary key(userId)
 );

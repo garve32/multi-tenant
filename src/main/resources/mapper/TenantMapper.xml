@@ -7,7 +7,7 @@
 <!--  </insert>-->
 
   <select id="getUsers" resultType="hashmap">
-    select id, name, email from emp
+    select userId, name, password, tenantId from emp
   </select>
 
 <!--  <delete id="del">-->
