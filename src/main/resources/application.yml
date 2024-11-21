@@ -3,6 +3,13 @@ spring:
     name: multi-tenant
   datasource:
     hikari:
+      common:
+        jdbc-url: jdbc:h2:mem:tenant0_db;INIT=RUNSCRIPT FROM 'classpath:h2init/schema.sql'\;RUNSCRIPT FROM 'classpath:h2init/data0.sql'
+        username: sa
+        password:
+        driver-class-name: org.h2.Driver
+        pool-name: common-cp
+        maximum-pool-size: 5
       tenant1:
         jdbc-url: jdbc:h2:mem:tenant1_db;INIT=RUNSCRIPT FROM 'classpath:h2init/schema.sql'\;RUNSCRIPT FROM 'classpath:h2init/data1.sql'
         username: sa
@@ -28,10 +35,10 @@ spring:
     console:
       enabled: true
       path: /h2-console
-#logging:
-#  level:
-#    com.zaxxer.hikari: TRACE
-#    com.zaxxer.hikari.HikariConfig: DEBUG
+logging:
+  level:
+    com.zaxxer.hikari: TRACE
+    com.zaxxer.hikari.HikariConfig: DEBUG
 jwt:
   secret: 5kZHdTLiJrNc6UnoRALCax20FRk9kqtDzDkL2NDgeC0=
   access-token-expiry: 86400

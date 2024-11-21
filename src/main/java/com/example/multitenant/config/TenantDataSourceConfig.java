@@ -35,7 +35,14 @@ public class TenantDataSourceConfig {
         targetDataSources.put(TenantEnum.COMPANY_C.getCode(), tenant3DataSource());
 
         routingDataSource.setTargetDataSources(targetDataSources);
+        routingDataSource.setDefaultTargetDataSource(commonDataSource());
         return routingDataSource;
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.hikari.common")
+    protected DataSource commonDataSource(){
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
