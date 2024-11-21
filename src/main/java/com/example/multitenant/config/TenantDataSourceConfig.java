@@ -25,7 +25,6 @@ public class TenantDataSourceConfig {
     @Primary
     @Bean
     public DataSource dataSourceRouter() {
-        System.out.println("TenantDataSourceConfig.dataSourceRouter");
 
         TenantRoutingDataSource routingDataSource = new TenantRoutingDataSource();
         Map<Object, Object> targetDataSources = new HashMap<>();

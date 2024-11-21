@@ -35,10 +35,10 @@ spring:
     console:
       enabled: true
       path: /h2-console
-logging:
-  level:
-    com.zaxxer.hikari: TRACE
-    com.zaxxer.hikari.HikariConfig: DEBUG
+#logging:
+#  level:
+#    com.zaxxer.hikari: TRACE
+#    com.zaxxer.hikari.HikariConfig: DEBUG
 jwt:
   secret: 5kZHdTLiJrNc6UnoRALCax20FRk9kqtDzDkL2NDgeC0=
   access-token-expiry: 86400
