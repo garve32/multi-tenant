@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.yaml.snakeyaml.util.EnumUtils;
 
 @Slf4j
-@Component
+//@Component
 public class TenantInterceptor implements HandlerInterceptor {
 
     @Override
