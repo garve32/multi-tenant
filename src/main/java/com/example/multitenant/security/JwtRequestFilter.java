@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +22,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Slf4j
-//@Component
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
@@ -33,9 +31,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // fixme : 패턴 매쳐 아님. 패턴 매쳐로 변경 해야 함. /** 이런거 미동작함.
         String[] excludePath = {
-                "/auth/**",
+                "/auth/login",
                 "/api/**"
         };
         String path = request.getRequestURI();
@@ -45,7 +44,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 헤더 뒤져서 tenantId, userId 가져오고
-        String token = extractBearerToken(request);
+//        String token = extractBearerToken(request);
+        String token = jwtTokenUtil.extractBearerToken(request);
 
         log.info("token: {}", token);
         if (StringUtils.hasText(token) && jwtTokenUtil.validateToken(token)) {
@@ -77,13 +77,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
         else {
-            log.info("token is empty");
-            throw new RuntimeException("X-TenantID header is missing");
+            log.info("JWT token is Not Valid");
+            throw new RuntimeException("JWT token is Not Valid");
         }
 
         filterChain.doFilter(request, response);
     }
 
+    // fixme : util로 옮기고 삭제
     private String extractBearerToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {

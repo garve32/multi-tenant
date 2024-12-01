@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-@Component
+//@Component
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
     @Override
@@ -22,16 +22,16 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (Exception e) {
-            e.printStackTrace();
-            setErrorResponse(response);
+//            e.printStackTrace();
+            setErrorResponse(response, e);
         }
     }
 
-    private void setErrorResponse(HttpServletResponse response) throws IOException {
+    private void setErrorResponse(HttpServletResponse response, Exception e) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         ApiResponse<Object> build = ApiResponse.builder()
             .code(HttpServletResponse.SC_BAD_REQUEST)
-            .message("Tenant ID is not valid")
+            .message(e.getMessage())
             .data(null)
             .build();
         response.getWriter().println(mapper.writeValueAsString(build));

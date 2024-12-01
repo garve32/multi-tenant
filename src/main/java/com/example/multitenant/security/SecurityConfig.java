@@ -1,26 +1,24 @@
 package com.example.multitenant.security;
 
 import com.example.multitenant.config.ExceptionHandlerFilter;
+import com.example.multitenant.config.MDCRequestLoggingFilter;
 import com.example.multitenant.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity(debug = true)
+//@EnableWebSecurity(debug = true)
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -48,10 +46,10 @@ public class SecurityConfig {
                 .requestMatchers(ALLOWED_URIS).permitAll()
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .anyRequest().authenticated());
-
-
+        // Exception > MDC > Jwt > user
         http.addFilterBefore(new JwtRequestFilter(jwtTokenUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new ExceptionHandlerFilter(), JwtRequestFilter.class);
+        http.addFilterBefore(new MDCRequestLoggingFilter(jwtTokenUtil), JwtRequestFilter.class);
+        http.addFilterBefore(new ExceptionHandlerFilter(), MDCRequestLoggingFilter.class);
 
 
         http.cors(cors -> cors

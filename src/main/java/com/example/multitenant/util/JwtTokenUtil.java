@@ -4,10 +4,12 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
@@ -20,8 +22,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtTokenUtil {
 
-//    private final AuthenticationManager authenticationManager;
-
     @Value("${jwt.secret}")
     private String secret;
     private SecretKey secretKey;
@@ -31,6 +31,9 @@ public class JwtTokenUtil {
 
     @Value("${jwt.refresh-token-expiry}")
     private long refreshTokenExpiry;
+
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_PREFIX = "Bearer ";
 
     @PostConstruct
     protected void init() {
@@ -130,6 +133,14 @@ public class JwtTokenUtil {
         }
 
         return false;
+    }
+
+    public String extractBearerToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(BEARER_PREFIX.length());
+        }
+        return null;
     }
 
 }
