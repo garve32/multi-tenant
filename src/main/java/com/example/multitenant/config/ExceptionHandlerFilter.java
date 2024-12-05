@@ -27,6 +27,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         }
     }
 
+    // todo : filter 에서 발생하는 에러를 상황별로 구분하여 처리 해야함
     private void setErrorResponse(HttpServletResponse response, Exception e) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         ApiResponse<Object> build = ApiResponse.builder()
